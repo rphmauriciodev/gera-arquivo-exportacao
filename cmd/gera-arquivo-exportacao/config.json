@@ -1,0 +1,5 @@
+{
+    "procs": ["ProcA", "ProcB", "ProcC"],
+    "out": "procedures_exportadas",
+    "workers": 5
+}
