@@ -1,30 +1,10 @@
 package repository
 
 import (
-	"bufio"
 	"database/sql"
 	"fmt"
-	"os"
 	"strings"
 )
-
-func ReadProceduresFromFile(fileName string) ([]string, error) {
-	file, err := os.Open(fileName)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	var procs []string
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
-		if line != "" {
-			procs = append(procs, line)
-		}
-	}
-	return procs, scanner.Err()
-}
 
 func GetProcedureCode(db *sql.DB, procName string) (string, error) {
 	query := `

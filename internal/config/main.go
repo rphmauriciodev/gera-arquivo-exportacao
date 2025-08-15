@@ -2,49 +2,78 @@ package config
 
 import (
 	"encoding/json"
+	"log"
 	"os"
 
 	"github.com/spf13/viper"
 )
 
-func Load(path string) (*Config, error) {
+func LoadConfig(path *string) (*Config, error) {
+	viper.SetConfigFile("../../externalConnectionStrings.env")
+	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 
-	file, err := os.Open(path)
+	if err := viper.ReadInConfig(); err != nil {
+		log.Printf("Erro ao ler .env: %v", err)
+	}
+
+	file, err := os.Open(*path)
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
 	var cfg Config
-	if err := json.NewDecoder(file).Decode(&cfg); err != nil {
+	if err := json.NewDecoder(file).Decode(&cfg.File); err != nil {
 		return nil, err
 	}
 
+	if cfg.Server == nil {
+		cfg.Server = &ServerConfig{}
+	}
+
 	if s := viper.GetString("DB_SERVER"); s != "" {
-		if cfg.Server == nil {
-			cfg.Server = &ServerConfig{}
-		}
 		cfg.Server.Server = s
 	}
 	if u := viper.GetString("DB_USER"); u != "" {
-		if cfg.Server == nil {
-			cfg.Server = &ServerConfig{}
-		}
 		cfg.Server.User = u
 	}
 	if p := viper.GetString("DB_PASS"); p != "" {
-		if cfg.Server == nil {
-			cfg.Server = &ServerConfig{}
-		}
 		cfg.Server.Password = p
 	}
 	if d := viper.GetString("DB_NAME"); d != "" {
-		if cfg.Server == nil {
-			cfg.Server = &ServerConfig{}
-		}
 		cfg.Server.Database = d
 	}
 
 	return &cfg, nil
+}
+
+func OverrideConfig(cfg *Config, server, user, pass, dbname, file, outDir, procsFlag *string, workersNum *int) {
+	if *server != "" {
+		cfg.Server.Server = *server
+	}
+	if *user != "" {
+		cfg.Server.User = *user
+	}
+	if *pass != "" {
+		cfg.Server.Password = *pass
+	}
+	if *dbname != "" {
+		cfg.Server.Database = *dbname
+	}
+	if *file != "" {
+		cfg.File.File = *file
+	}
+	if *outDir != "" {
+		cfg.File.Out = *outDir
+	}
+	if *procsFlag != "" {
+		cfg.File.Procs = *procsFlag
+	}
+	if *workersNum > 0 {
+		cfg.File.NumWorkers = *workersNum
+	}
+	if cfg.File.NumWorkers == 0 {
+		cfg.File.NumWorkers = 5
+	}
 }
