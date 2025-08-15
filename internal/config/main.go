@@ -9,7 +9,18 @@ import (
 )
 
 func LoadConfig(path *string) (*Config, error) {
-	viper.SetConfigFile("../../externalConnectionStrings.env")
+
+	fileEnv := "../../externalConnectionStrings.env.development"
+
+	if _, err := os.Stat(fileEnv); err != nil {
+		if os.IsNotExist(err) {
+			fileEnv = "../../externalConnectionStrings.env"
+		} else {
+			log.Fatalf("Erro ao verificar arquivo %s: %v", fileEnv, err)
+		}
+	}
+
+	viper.SetConfigFile(fileEnv)
 	viper.SetConfigType("env")
 	viper.AutomaticEnv()
 
