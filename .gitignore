@@ -1,2 +1,9 @@
 # Variáveis de ambiente
 *.env.development
+
+# Arquivos de saída
+*.out
+
+# Arquivos de módulo
+go.mod
+go.sum
