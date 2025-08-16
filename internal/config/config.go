@@ -5,6 +5,7 @@ type ServerConfig struct {
 	User     string `json:"user"`
 	Password string `json:"password"`
 	Database string `json:"database"`
+	DbType   string `json:"dbType"`
 }
 
 type FileConfig struct {

@@ -3,3 +3,6 @@
 
 # Arquivos de saída
 *.out
+
+#Procedures exportadas
+**/procedures_exportadas/

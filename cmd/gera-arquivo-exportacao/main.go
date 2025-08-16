@@ -4,6 +4,7 @@ import (
 	"flag"
 	"fmt"
 	"log"
+	"os"
 	"sync"
 
 	"github.com/rphmauriciodev/gera-arquivo-exportacao.git/internal/config"
@@ -16,6 +17,7 @@ func main() {
 	user := flag.String("user", "", "Usuário do banco")
 	pass := flag.String("pass", "", "Senha do banco")
 	dbname := flag.String("db", "", "Nome do banco de dados")
+	dbType := flag.String("dbType", "", "Tipo de banco de dados (Ex: SQLSERVER)")
 	file := flag.String("file", "", "Arquivo com lista de procedures")
 	outDir := flag.String("out", "", "Diretório de saída")
 	procsFlag := flag.String("procs", "", "Lista de procedures separadas por vírgula")
@@ -27,7 +29,7 @@ func main() {
 		cfg = &config.Config{}
 	}
 
-	config.OverrideConfig(cfg, server, user, pass, dbname, file, outDir, procsFlag, workersNum)
+	config.OverrideConfig(cfg, server, user, pass, dbname, dbType, file, outDir, procsFlag, workersNum)
 
 	procs, err := service.ProceduresFromConfig(cfg)
 
@@ -36,6 +38,8 @@ func main() {
 	}
 
 	tasks := make(chan string, len(procs))
+
+	os.MkdirAll(cfg.File.Out, os.ModePerm)
 
 	var wg sync.WaitGroup
 	for i := 0; i < cfg.File.NumWorkers; i++ {

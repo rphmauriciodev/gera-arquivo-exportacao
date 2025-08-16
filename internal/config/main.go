@@ -52,14 +52,17 @@ func LoadConfig(path *string) (*Config, error) {
 	if p := viper.GetString("DB_PASS"); p != "" {
 		cfg.Server.Password = p
 	}
-	if d := viper.GetString("DB_NAME"); d != "" {
-		cfg.Server.Database = d
+	if n := viper.GetString("DB_NAME"); n != "" {
+		cfg.Server.Database = n
+	}
+	if t := viper.GetString("DB_TYPE"); t != "" {
+		cfg.Server.DbType = t
 	}
 
 	return &cfg, nil
 }
 
-func OverrideConfig(cfg *Config, server, user, pass, dbname, file, outDir, procsFlag *string, workersNum *int) {
+func OverrideConfig(cfg *Config, server, user, pass, dbname, dbType, file, outDir, procsFlag *string, workersNum *int) {
 	if *server != "" {
 		cfg.Server.Server = *server
 	}
@@ -71,6 +74,9 @@ func OverrideConfig(cfg *Config, server, user, pass, dbname, file, outDir, procs
 	}
 	if *dbname != "" {
 		cfg.Server.Database = *dbname
+	}
+	if *dbType != "" {
+		cfg.Server.DbType = *dbType
 	}
 	if *file != "" {
 		cfg.File.File = *file

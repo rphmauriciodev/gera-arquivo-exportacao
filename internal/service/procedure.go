@@ -19,14 +19,28 @@ func ExportProcedures(cfg *config.Config, tasks <-chan string, wg *sync.WaitGrou
 
 	outDir := cfg.File.Out
 
-	db, err := config.ConnectDb(cfg)
+	dbType := strings.ToUpper(cfg.Server.DbType)
+
+	var dbHandler config.IDatabase
+
+	switch dbType {
+	case "POSTGRES":
+		dbHandler = &config.PostgresDB{}
+	case "SQLSERVER":
+		dbHandler = &config.SQLServerDB{}
+	default:
+		log.Fatal("Tipo de banco de dados informado não é atendido")
+		return
+	}
+
+	db, err := dbHandler.Connect(cfg)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for proc := range tasks {
-		code, err := repository.GetProcedureCode(db, proc)
+		code, err := repository.GetProcedureCode(db, dbType, proc)
 		if err != nil {
 			log.Printf("Erro ao buscar procedure %s: %v\n", proc, err)
 			continue
