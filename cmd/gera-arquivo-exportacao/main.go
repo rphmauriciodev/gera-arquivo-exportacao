@@ -13,10 +13,7 @@ import (
 
 func main() {
 	configPath := flag.String("config", "../../config.json", "Arquivo de configuração JSON")
-	server := flag.String("server", "", "Servidor SQL Server")
-	user := flag.String("user", "", "Usuário do banco")
-	pass := flag.String("pass", "", "Senha do banco")
-	dbname := flag.String("db", "", "Nome do banco de dados")
+	connectionString := flag.String("connectionString", "", "String de conexão com o banco de dados")
 	dbType := flag.String("dbType", "", "Tipo de banco de dados (Ex: SQLSERVER)")
 	file := flag.String("file", "", "Arquivo com lista de procedures")
 	outDir := flag.String("out", "", "Diretório de saída")
@@ -29,7 +26,7 @@ func main() {
 		cfg = &config.Config{}
 	}
 
-	config.OverrideConfig(cfg, server, user, pass, dbname, dbType, file, outDir, procsFlag, workersNum)
+	config.OverrideConfig(cfg, connectionString, dbType, file, outDir, procsFlag, workersNum)
 
 	procs, err := service.ProceduresFromConfig(cfg)
 

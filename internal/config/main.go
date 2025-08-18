@@ -43,17 +43,8 @@ func LoadConfig(path *string) (*Config, error) {
 		cfg.Server = &ServerConfig{}
 	}
 
-	if s := viper.GetString("DB_SERVER"); s != "" {
-		cfg.Server.Server = s
-	}
-	if u := viper.GetString("DB_USER"); u != "" {
-		cfg.Server.User = u
-	}
-	if p := viper.GetString("DB_PASS"); p != "" {
-		cfg.Server.Password = p
-	}
-	if n := viper.GetString("DB_NAME"); n != "" {
-		cfg.Server.Database = n
+	if c := viper.GetString("DB_CONNECTION"); c != "" {
+		cfg.Server.ConnectionString = c
 	}
 	if t := viper.GetString("DB_TYPE"); t != "" {
 		cfg.Server.DbType = t
@@ -62,18 +53,9 @@ func LoadConfig(path *string) (*Config, error) {
 	return &cfg, nil
 }
 
-func OverrideConfig(cfg *Config, server, user, pass, dbname, dbType, file, outDir, procsFlag *string, workersNum *int) {
-	if *server != "" {
-		cfg.Server.Server = *server
-	}
-	if *user != "" {
-		cfg.Server.User = *user
-	}
-	if *pass != "" {
-		cfg.Server.Password = *pass
-	}
-	if *dbname != "" {
-		cfg.Server.Database = *dbname
+func OverrideConfig(cfg *Config, conectionString, dbType, file, outDir, procsFlag *string, workersNum *int) {
+	if *conectionString != "" {
+		cfg.Server.ConnectionString = *conectionString
 	}
 	if *dbType != "" {
 		cfg.Server.DbType = *dbType

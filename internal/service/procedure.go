@@ -14,7 +14,6 @@ import (
 )
 
 func ExportProcedures(cfg *config.Config, tasks <-chan string, wg *sync.WaitGroup) {
-
 	defer wg.Done()
 
 	outDir := cfg.File.Out
@@ -30,6 +29,11 @@ func ExportProcedures(cfg *config.Config, tasks <-chan string, wg *sync.WaitGrou
 		dbHandler = &config.SQLServerDB{}
 	default:
 		log.Fatal("Tipo de banco de dados informado não é atendido")
+		return
+	}
+
+	if cfg.Server.ConnectionString == "" {
+		log.Fatal("configuração inválida: servidor, usuário, senha e banco são obrigatórios")
 		return
 	}
 

@@ -1,11 +1,8 @@
 package config
 
 type ServerConfig struct {
-	Server   string `json:"server"`
-	User     string `json:"user"`
-	Password string `json:"password"`
-	Database string `json:"database"`
-	DbType   string `json:"dbType"`
+	ConnectionString string `json:"connectionString"`
+	DbType           string `json:"dbType"`
 }
 
 type FileConfig struct {

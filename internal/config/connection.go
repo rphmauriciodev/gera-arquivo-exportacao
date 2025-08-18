@@ -3,7 +3,6 @@ package config
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
 
 	_ "github.com/denisenkom/go-mssqldb"
@@ -18,16 +17,7 @@ type SQLServerDB struct{}
 type PostgresDB struct{}
 
 func (s *SQLServerDB) Connect(cfg *Config) (*sql.DB, error) {
-	if cfg.Server.Server == "" || cfg.Server.User == "" || cfg.Server.Password == "" || cfg.Server.Database == "" {
-		return nil, errors.New("configuração inválida: servidor, usuário, senha e banco são obrigatórios")
-	}
-
-	connString := fmt.Sprintf(
-		"server=%s;user id=%s;password=%s;database=%s",
-		cfg.Server.Server, cfg.Server.User, cfg.Server.Password, cfg.Server.Database,
-	)
-
-	db, err := sql.Open("sqlserver", connString)
+	db, err := sql.Open("sqlserver", cfg.Server.ConnectionString)
 	if err != nil {
 		return nil, fmt.Errorf("erro ao abrir conexão com o banco: %w", err)
 	}
@@ -40,16 +30,7 @@ func (s *SQLServerDB) Connect(cfg *Config) (*sql.DB, error) {
 }
 
 func (p *PostgresDB) Connect(cfg *Config) (*sql.DB, error) {
-	if cfg.Server.Server == "" || cfg.Server.User == "" || cfg.Server.Password == "" || cfg.Server.Database == "" {
-		return nil, errors.New("configuração inválida: host, usuário, senha e banco são obrigatórios")
-	}
-
-	connString := fmt.Sprintf(
-		"postgres://%s:%s@%s/%s",
-		cfg.Server.User, cfg.Server.Password, cfg.Server.Server, cfg.Server.Database,
-	)
-
-	db, err := sql.Open("pgx", connString)
+	db, err := sql.Open("pgx", cfg.Server.ConnectionString)
 	if err != nil {
 		return nil, fmt.Errorf("erro ao abrir conexão com PostgreSQL: %w", err)
 	}
