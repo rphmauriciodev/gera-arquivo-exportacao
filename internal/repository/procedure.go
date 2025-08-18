@@ -22,8 +22,7 @@ func GetProcedureCode(db *sql.DB, dbType, procName string) (string, error) {
 		query = `
 		SELECT sm.definition
 		FROM sys.sql_modules sm
-		INNER JOIN sys.objects so ON sm.object_id = so.object_id
-		WHERE so.name = @p1
+		WHERE sm.object_id = OBJECT_ID(@p1, 'P')
 		`
 	}
 
