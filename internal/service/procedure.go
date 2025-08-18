@@ -50,11 +50,6 @@ func ExportProcedures(cfg *config.Config, tasks <-chan string, wg *sync.WaitGrou
 			continue
 		}
 
-		idx := strings.Index(code, "DECLARE @TipoExportacaoId")
-		if idx != -1 {
-			code = strings.TrimSpace(code[idx:])
-		}
-
 		filePath := fmt.Sprintf("%s/%s.sql", outDir, proc)
 		err = os.WriteFile(filePath, []byte(code), 0644)
 		if err != nil {
